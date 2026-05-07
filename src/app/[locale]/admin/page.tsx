@@ -185,6 +185,11 @@ export default function AdminPage() {
     });
   };
 
+  // Prevent toolbar buttons from stealing focus and resetting selection/scroll.
+  const keepRawEditorFocus = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+  };
+
   // Load content search index based on active tab
   useEffect(() => {
     const loadIndex = async () => {
@@ -791,6 +796,7 @@ Start writing here...`;
                           </span>
                           <button
                             type="button"
+                            onMouseDown={keepRawEditorFocus}
                             onClick={() => applyPrefixLines("# ")}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-black text-zinc-200 hover:border-amber-500/50 hover:text-amber-400 transition-colors"
                             title="Heading 1"
@@ -799,6 +805,7 @@ Start writing here...`;
                           </button>
                           <button
                             type="button"
+                            onMouseDown={keepRawEditorFocus}
                             onClick={() => applyPrefixLines("## ")}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-black text-zinc-200 hover:border-amber-500/50 hover:text-amber-400 transition-colors"
                             title="Heading 2"
@@ -807,6 +814,7 @@ Start writing here...`;
                           </button>
                           <button
                             type="button"
+                            onMouseDown={keepRawEditorFocus}
                             onClick={() => applyPrefixLines("### ")}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-black text-zinc-200 hover:border-amber-500/50 hover:text-amber-400 transition-colors"
                             title="Heading 3"
@@ -821,6 +829,7 @@ Start writing here...`;
                           </span>
                           <button
                             type="button"
+                            onMouseDown={keepRawEditorFocus}
                             onClick={() => applyWrap("**", "**", "bold")}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-sm font-black text-zinc-200 hover:border-amber-500/50 hover:text-amber-400 transition-colors"
                             title="Bold"
@@ -829,6 +838,7 @@ Start writing here...`;
                           </button>
                           <button
                             type="button"
+                            onMouseDown={keepRawEditorFocus}
                             onClick={() => applyWrap("*", "*", "italic")}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-sm font-black text-zinc-200 hover:border-amber-500/50 hover:text-amber-400 transition-colors italic"
                             title="Italic"
@@ -837,6 +847,7 @@ Start writing here...`;
                           </button>
                           <button
                             type="button"
+                            onMouseDown={keepRawEditorFocus}
                             onClick={() => applyWrap("`", "`", "code")}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-black text-zinc-200 hover:border-amber-500/50 hover:text-amber-400 transition-colors"
                             title="Inline code"
@@ -851,6 +862,7 @@ Start writing here...`;
                           </span>
                           <button
                             type="button"
+                            onMouseDown={keepRawEditorFocus}
                             onClick={() => applyPrefixLines("> ")}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-black text-zinc-200 hover:border-amber-500/50 hover:text-amber-400 transition-colors"
                             title="Quote"
@@ -859,6 +871,7 @@ Start writing here...`;
                           </button>
                           <button
                             type="button"
+                            onMouseDown={keepRawEditorFocus}
                             onClick={() => applyPrefixLines("- ")}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-sm font-black text-zinc-200 hover:border-amber-500/50 hover:text-amber-400 transition-colors"
                             title="Bulleted list"
@@ -867,6 +880,7 @@ Start writing here...`;
                           </button>
                           <button
                             type="button"
+                            onMouseDown={keepRawEditorFocus}
                             onClick={() => applyPrefixLines("1. ")}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-black text-zinc-200 hover:border-amber-500/50 hover:text-amber-400 transition-colors"
                             title="Numbered list"
@@ -881,6 +895,7 @@ Start writing here...`;
                           </span>
                           <button
                             type="button"
+                            onMouseDown={keepRawEditorFocus}
                             onClick={() => applyWrap("[", "](https://)", "link text")}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-black text-zinc-200 hover:border-amber-500/50 hover:text-amber-400 transition-colors"
                             title="Link"
@@ -889,6 +904,7 @@ Start writing here...`;
                           </button>
                           <button
                             type="button"
+                            onMouseDown={keepRawEditorFocus}
                             onClick={() => insertSnippet("\n```ts\n\n```\n", 4)}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-black text-zinc-200 hover:border-amber-500/50 hover:text-amber-400 transition-colors"
                             title="Code block"
@@ -897,6 +913,7 @@ Start writing here...`;
                           </button>
                           <button
                             type="button"
+                            onMouseDown={keepRawEditorFocus}
                             onClick={() =>
                               insertSnippet(
                                 "\n| Col 1 | Col 2 |\n| --- | --- |\n|  |  |\n",
@@ -910,6 +927,7 @@ Start writing here...`;
                           </button>
                           <button
                             type="button"
+                            onMouseDown={keepRawEditorFocus}
                             onClick={() => insertSnippet("\n---\n")}
                             className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-black text-zinc-200 hover:border-amber-500/50 hover:text-amber-400 transition-colors"
                             title="Horizontal rule"
