@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bagdja Platform Docs
 
-## Getting Started
+A modern, multi-language documentation hub for the Bagdja Platform — powered by **Next.js (App Router)** and **MDX**.
 
-First, run the development server:
+It ships with a **public docs site**, **full-text search**, and an **admin console** for editing docs in both **Raw MDX** and **Visual (WYSIWYG)** modes.
+
+## Features
+
+- **Multi-language routing**: locale-first URLs like `/{locale}/docs/...` (`en`, `id`, `zh`, `es`, `ar`)
+- **MDX rendering**: MDX compiled on the server with GitHub-flavored markdown support
+- **Docs tree & ordering**: sidebar navigation built from the `docs/` folder + frontmatter ordering
+- **Full-text search**: MiniSearch-based index served from an API route and consumed client-side
+- **Admin console**:
+  - Auth via a simple cookie session
+  - Create / edit / delete docs across all languages
+  - **Raw editor** with a floating icon toolbox (quick inserts for headings, lists, code blocks, etc.)
+  - **Visual editor** using `@mdxeditor/editor`
+  - Preview via an **embed-friendly public route** (no shell UI)
+
+## Tech stack
+
+- **Next.js** `16.x`
+- **React** `19.x`
+- **Tailwind CSS** `4.x`
+- **MDX**: `next-mdx-remote/rsc`, `remark-gfm`
+- **Search**: `minisearch`
+
+## Getting started
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the app:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Public docs: `http://localhost:3000/en/docs/overview/introduction`
+- Admin: `http://localhost:3000/en/admin`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment variables
 
-## Learn More
+Create a `.env.local`:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+ADMIN_PASSWORD=your-strong-password
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+If `ADMIN_PASSWORD` is not set, the admin route falls back to a default password (recommended to override in all environments).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Docs authoring
 
-## Deploy on Vercel
+Docs live in the `docs/` folder as `.mdx` (or `.md`) files.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### File naming & locales
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Default (Indonesian): `docs/<slug>.mdx`
+- Localized: `docs/<slug>.<locale>.mdx` (example: `docs/overview/introduction.en.mdx`)
+
+### Frontmatter
+
+The docs engine reads frontmatter for:
+
+- `title`: page title
+- `description`: short page description
+- `order`: numeric ordering for sidebar
+- `id`: canonical ID to link translations of the same page across locales
+
+Example:
+
+```md
+---
+id: overview/introduction
+title: Overview
+description: The Integrated Distribution Platform for Modern Developers
+order: 1
+---
+```
+
+## Public routes
+
+- Docs: `/{locale}/docs/[...slug]`
+- Embed-only docs (no shell UI; best for iframes): `/{locale}/docs-embed/[...slug]`
+
+## Admin routes
+
+- Admin UI: `/{locale}/admin`
+- Auth API: `/api/admin/auth`
+- Docs CRUD API: `/api/admin/docs`
+- Search index API: `/api/docs-search?locale=<locale>`
+
+## Repo structure (high-level)
+
+- `docs/`: MDX content (source of truth)
+- `src/app/[locale]/docs/`: docs pages + shell layout + sidebar
+- `src/app/[locale]/admin/`: admin console UI + preview
+- `src/app/api/`: admin/search API routes
+- `src/lib/docs.ts`: docs filesystem reader, tree builder, search document extraction
+- `src/lib/i18n.ts`: locales + labels + UI translations
+
+## Notes
+
+- This project reads/writes docs from the local filesystem (`docs/`). In production, ensure your deployment strategy supports persistent content changes (or replace the storage layer).
+

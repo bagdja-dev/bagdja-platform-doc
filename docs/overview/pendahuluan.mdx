@@ -1,0 +1,356 @@
+---
+title: Overview
+description: The Integrated Distribution Platform for Modern Developers
+id: overview/introduction
+---
+
+# 🚀 Bagdja
+
+## The Integrated Platform for Modern Developers
+
+> **App Store × Identity × Monetization — in one ecosystem**
+
+---
+
+## 🌍 The Problem We Solve
+
+Developers today don't just build products.
+
+They have to manage:
+
+<div style={{display: "flex", gap: "20px", flexWrap: "wrap"}}>
+  <div style={{flex: 1}}>
+    <h3>📢 Distribution</h3>
+    <p>Apps are hard to find among millions of applications</p>
+  </div>
+  <div style={{flex: 1}}>
+    <h3>🔐 Authentication</h3>
+    <p>Auth systems take months to build & maintain</p>
+  </div>
+  <div style={{flex: 1}}>
+    <h3>💳 Monetization</h3>
+    <p>Payment & subscriptions are complex and full of compliance</p>
+  </div>
+</div>
+
+---
+
+### ⚠️ The Hidden Cost
+
+```txt
+Build In-House Infrastructure
+
+Auth System        → 3–6 months
+Payment System     → 2–4 months
+Distribution       → ongoing struggle
+
+TOTAL              → 6–12 months lost
+```
+
+> Developers lose time not because of the product… but because of infrastructure.
+
+---
+
+## 💡 The Solution: Bagdja
+
+Bagdja brings everything together in one platform.
+
+---
+
+### 🧩 One Platform. Three Pillars.
+
+<div style={{textAlign: "center", fontSize: "22px", margin: "40px 0"}}>
+
+🛍️ **Store**  
+↓  
+🔐 **Identity**  
+↓  
+💳 **Monetization**
+
+</div>
+
+---
+
+### 🔄 Seamless Flow
+
+```txt
+Discover App → Login → Subscribe → Use App
+
+( All in < 30 seconds )
+```
+
+---
+
+## 🏗️ Platform Architecture
+
+Bagdja is not a monolith. It is a **modular service-based ecosystem**.
+
+---
+
+### 🌐 Public Ecosystem
+
+```txt
+bagdja.com          → Main landing
+dev.bagdja.com      → Dev services & integration
+porto.bagdja.com    → Portfolio showcase
+platform.bagdja.com → Documentation hub
+```
+
+---
+
+### ⚙️ Core Infrastructure
+
+```txt
+console.bagdja.com         → Developer dashboard
+
+auth.service.bagdja.com    → Identity & SSO (source of truth)
+
+event.bagdja.com           → Event-driven communication layer
+
+assets.bagdja.com          → File & media storage
+```
+
+---
+
+## 🔐 Identity as the Core
+
+Bagdja is built with the principle:
+
+> **Identity is the foundation of everything**
+
+All applications are connected through:
+
+```txt
+app_id → identity → access → monetization
+```
+
+Meaning:
+- 1 user = can access all apps
+- 1 login = entire ecosystem
+- 1 identity = all subscriptions
+
+---
+
+## ⚡ Developer Experience
+
+### 🔌 API-First Integration
+
+Bagdja is designed for ease of integration through standard yet powerful REST APIs.
+
+#### 🔐 Authentication (SSO & Identity)
+
+Just one request to verify user identity across the entire ecosystem.
+
+```json
+// Login user via Bagdja Auth
+const response = await fetch('https://auth.service.bagdja.com/auth/login', {
+  method: 'POST',
+  headers: { 
+    'x-api-key': 'your-app-key',
+    'Content-Type': 'application/json' 
+  },
+  body: JSON.stringify({
+    username: 'johndoe',
+    password: 'securepassword'
+  })
+});
+
+const { access_token, user } = await response.json();
+```
+
+#### 📡 Event-Driven Ecosystem
+
+Connect your application with other services through real-time event broadcasting.
+
+```javascript
+// Broadcast event to all subscribers
+await fetch('https://event.bagdja.com/broadcast', {
+  method: 'POST',
+  headers: { 
+    'x-api-key': 'your-app-key',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    orgId: '123e4567-e89b-12d3-a456-426614174000',
+    appId: 'my-app-service',
+    eventName: 'user.registered',
+    data: { userId: 'user-123', email: 'test@example.com' },
+    signature: 'base64-encoded-signature'
+  })
+});
+```
+
+---
+
+### ⏱️ What You Save
+
+```txt
+Traditional Approach   → 6–12 months
+With Bagdja           → < 1 week
+
+Time Saved            → up to 90%
+Cost Saved            → massive
+```
+
+---
+
+### 🧠 What You Get Instantly
+
+- Authentication system (SSO, social login)
+- Payment & subscription engine
+- User management system
+- Analytics dashboard
+- Distribution channel (Store)
+
+---
+
+## 🛍️ Store: Distribution Engine
+
+Bagdja is more than just tools.
+
+It is a **distribution platform**.
+
+---
+
+### 🔍 Discovery System
+
+- AI-powered recommendation
+- SEO-ready app pages
+- Rating & review system
+- Category & tagging
+
+---
+
+### 🎯 Why This Matters
+
+```txt
+More Apps → More Users → More Revenue → Better Platform
+```
+
+👉 A network effect that regular tools don't have.
+
+---
+
+## 🔄 The 30-Second User Journey
+
+<div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
+
+<div>1️⃣ Discover app in Store (5s)</div>
+<div>2️⃣ Auto login with Bagdja ID (5s)</div>
+<div>3️⃣ Choose plan & pay (15s)</div>
+<div>4️⃣ Start using app (5s)</div>
+
+</div>
+
+---
+
+> No friction. No repeated signup. No complexity.
+
+---
+
+## 🎯 Who Is This For?
+
+<div style={{display: "flex", gap: "20px", flexWrap: "wrap"}}>
+  <div style={{flex: 1}}>
+    <h4>👨‍💻 Indie Developers</h4>
+    <p>Build fast without infrastructure overhead</p>
+  </div>
+  <div style={{flex: 1}}>
+    <h4>🚀 Startups</h4>
+    <p>Scale without hiring an infra team</p>
+  </div>
+  <div style={{flex: 1}}>
+    <h4>🤖 AI Builders</h4>
+    <p>Focus on model & product, not billing complexity</p>
+  </div>
+</div>
+
+---
+
+## 🚧 Current Progress
+
+### ✅ Already Built
+- Core service foundation
+- Event-driven architecture
+- Landing ecosystem
+
+---
+
+### 🔄 In Progress
+- Platform documentation (this site)
+- Store & discovery system
+- SDK ecosystem
+
+---
+
+### 🔮 Coming Next
+
+```txt
+AI Recommendation Engine
+Unified Subscription Hub
+Developer Marketplace
+Cross-App Analytics
+```
+
+---
+
+## 🌱 Vision
+
+We want to create a world where:
+
+- Developers focus 100% on the product
+- Users don't need to login repeatedly
+- Distribution becomes fair for everyone
+
+---
+
+## 🔁 Ecosystem Flywheel
+
+```txt
+More Developers
+      ↓
+More Apps
+      ↓
+More Users
+      ↓
+More Revenue
+      ↓
+Better Platform
+      ↓
+Repeat 🔁
+```
+
+---
+
+## 🧠 Core Philosophy
+
+> **Developers build products.  
+Bagdja handles everything else.**
+
+---
+
+## 🚀 Final Thought
+
+Bagdja is not just a platform.
+
+It is:
+
+- Infrastructure layer
+- Distribution channel
+- Growth engine
+
+All in one ecosystem.
+
+---
+
+## 👉 Next Step
+
+Start with:
+
+- 🔧 Setup SDK
+- 📦 Publish your first app
+- 🚀 Launch to ecosystem
+
+---
+
+**Let’s build the future — together.**

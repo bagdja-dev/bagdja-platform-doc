@@ -1,0 +1,358 @@
+---
+title: Descripción general
+description: La plataforma de distribución integrada para desarrolladores modernos
+id: overview/introduction
+---
+
+# 🚀 Bagdja
+
+## La plataforma integrada para desarrolladores modernos
+
+> **App Store × Identidad × Monetización — en un solo ecosistema**
+
+---
+
+## 🌍 El problema que resolvemos
+
+Los desarrolladores de hoy no solo construyen productos.
+
+Tienen que gestionar:
+
+<div style={{display: "flex", gap: "20px", flexWrap: "wrap"}}>
+  <div style={{flex: 1}}>
+    <h3>📢 Distribución</h3>
+    <p>Las aplicaciones son difíciles de encontrar entre millones de ellas</p>
+  </div>
+  <div style={{flex: 1}}>
+    <h3>🔐 Autenticación</h3>
+    <p>Los sistemas de autenticación tardan meses en construirse y mantenerse</p>
+  </div>
+  <div style={{flex: 1}}>
+    <h3>💳 Monetización</h3>
+    <p>Los pagos y suscripciones son complejos y llenos de cumplimiento</p>
+  </div>
+</div>
+
+---
+
+### ⚠️ El costo oculto
+
+```txt
+Construir infraestructura propia
+
+Sistema de autenticación → 3–6 meses
+Sistema de pago         → 2–4 meses
+Distribución            → lucha continua
+
+TOTAL                   → 6–12 meses perdidos
+```
+
+> Los desarrolladores pierden tiempo no por el producto… sino por la infraestructura.
+
+---
+
+## 💡 La solución: Bagdja
+
+Bagdja une todo en una sola plataforma.
+
+---
+
+### 🧩 Una plataforma. Tres pilares.
+
+<div style={{textAlign: "center", fontSize: "22px", margin: "40px 0"}}>
+
+🛍️ **Tienda**  
+↓  
+🔐 **Identidad**  
+↓  
+💳 **Monetización**
+
+</div>
+
+---
+
+### 🔄 Flujo sin interrupciones
+
+```txt
+Descubrir App → Iniciar sesión → Suscribirse → Usar App
+
+( Todo en < 30 segundos )
+```
+
+---
+
+## 🏗️ Arquitectura de la plataforma
+
+Bagdja no es un monolito. Es un **ecosistema modular basado en servicios**.
+
+---
+
+### 🌐 Ecosistema público
+
+```txt
+bagdja.com          → Landing principal
+dev.bagdja.com      → Servicios para desarrolladores e integración
+porto.bagdja.com    → Escaparate de portafolios
+platform.bagdja.com → Centro de documentación
+```
+
+---
+
+### ⚙️ Infraestructura central
+
+```txt
+console.bagdja.com         → Panel de control del desarrollador
+
+auth.service.bagdja.com    → Identidad y SSO (fuente de verdad)
+
+event.bagdja.com           → Capa de comunicación basada en eventos
+
+assets.bagdja.com          → Almacenamiento de archivos y medios
+```
+
+---
+
+## 🔐 La identidad como núcleo
+
+Bagdja se construye con el principio:
+
+> **La identidad es la base de todo**
+
+Todas las aplicaciones están conectadas a través de:
+
+```txt
+app_id → identidad → acceso → monetización
+```
+
+Lo que significa:
+- 1 usuario = puede acceder a todas las aplicaciones
+- 1 inicio de sesión = todo el ecosistema
+- 1 identidad = todas las suscripciones
+
+---
+
+## ⚡ Experiencia del desarrollador
+
+### 🔌 Integración API-First
+
+Bagdja está diseñado para facilitar la integración a través de APIs REST estándar pero potentes.
+
+#### 🔐 Autenticación (SSO e Identidad)
+
+Solo una solicitud untuk verifikasi identitas pengguna di seluruh ekosistem.
+
+```javascript
+// Iniciar sesión de usuario a través de Bagdja Auth
+const response = await fetch('https://auth.service.bagdja.com/auth/login', {
+  method: 'POST',
+  headers: { 
+    'x-api-key': 'your-app-key',
+    'Content-Type': 'application/json' 
+  },
+  body: JSON.stringify({
+    username: 'johndoe',
+    password: 'securepassword'
+  })
+});
+
+const { access_token, user } = await response.json();
+```
+
+#### 📡 Ecosistema basado en eventos
+
+Conecte su aplicación con otros servicios a través de la difusión de eventos en tiempo real.
+
+```javascript
+// Difundir evento a todos los suscriptores
+await fetch('https://event.bagdja.com/broadcast', {
+  method: 'POST',
+  headers: { 
+    'x-api-key': 'your-app-key',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    orgId: '123e4567-e89b-12d3-a456-426614174000',
+    appId: 'my-app-service',
+    eventName: 'user.registered',
+    data: { userId: 'user-123', email: 'test@example.com' },
+    signature: 'base64-encoded-signature'
+  })
+});
+```
+
+---
+
+### ⏱️ Lo que ahorras
+
+```txt
+Enfoque tradicional   → 6–12 meses
+Con Bagdja           → < 1 semana
+
+Tiempo ahorrado      → hasta un 90%
+Costos ahorrados     → masivos
+```
+
+---
+
+### 🧠 Lo que obtienes al instante
+
+- Sistema de autenticación (SSO, inicio de sesión social)
+- Motor de pagos y suscripciones
+- Sistema de gestión de usuarios
+- Panel de análisis
+- Canal de distribución (Tienda)
+
+---
+
+## 🛍️ Tienda: Motor de distribución
+
+Bagdja es más que solo herramientas.
+
+Es una **plataforma de distribución**.
+
+---
+
+### 🔍 Sistema de descubrimiento
+
+- Recomendaciones impulsadas por IA
+- Páginas de aplicaciones preparadas para SEO
+- Sistema de calificación y reseñas
+- Categorías y etiquetas
+
+---
+
+### 🎯 Por qué esto importa
+
+```txt
+Más Apps → Más Usuarios → Más Ingresos → Mejor Plataforma
+```
+
+👉 Un efecto de red que las herramientas normales no tienen.
+
+---
+
+## 🔄 El viaje del usuario en 30 segundos
+
+<div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
+
+<div>1️⃣ Descubrir aplicación en la Tienda (5s)</div>
+<div>2️⃣ Inicio de sesión automático con Bagdja ID (5s)</div>
+<div>3️⃣ Elegir plan y pagar (15s)</div>
+<div>4️⃣ Comenzar a usar la aplicación (5s)</div>
+
+</div>
+
+---
+
+> Sin fricciones. Sin registros repetidos. Sin complejidad.
+
+---
+
+## 🎯 ¿Para quién es esto?
+
+<div style={{display: "flex", gap: "20px", flexWrap: "wrap"}}>
+  <div style={{flex: 1}}>
+    <h4>👨‍💻 Desarrolladores independientes</h4>
+    <p>Construye rápido sin la sobrecarga de infraestructura</p>
+  </div>
+  <div style={{flex: 1}}>
+    <h4>🚀 Startups</h4>
+    <p>Escala sin contratar un equipo de infraestructura</p>
+  </div>
+  <div style={{flex: 1}}>
+    <h4>🤖 Creadores de IA</h4>
+    <p>Enfócate en el modelo y el producto, no en la complejidad de la facturación</p>
+  </div>
+</div>
+
+---
+
+## 🚧 Progreso actual
+
+### ✅ Ya construido
+- Base de servicios centrales
+- Arquitectura basada en eventos
+- Ecosistema de aterrizaje
+
+---
+
+### 🔄 En progreso
+- Documentación de la plataforma (este sitio)
+- Sistema de tienda y descubrimiento
+- Ecosistema SDK
+
+---
+
+### 🔮 Próximamente
+
+```txt
+Motor de recomendaciones de IA
+Centro de suscripciones unificado
+Mercado de desarrolladores
+Análisis entre aplicaciones
+```
+
+---
+
+## 🌱 Visión
+
+Queremos crear un mundo donde:
+
+- Los desarrolladores se enfoquen 100% en el producto
+- Los usuarios no necesiten iniciar sesión repetidamente
+- La distribución sea justa para todos
+
+---
+
+## 🔁 Volante del ecosistema
+
+```txt
+Más desarrolladores
+      ↓
+Más aplicaciones
+      ↓
+Más usuarios
+      ↓
+Más ingresos
+      ↓
+Mejor plataforma
+      ↓
+Repetir 🔁
+```
+
+---
+
+## 🧠 Filosofía central
+
+> **Los desarrolladores construyen productos.  
+Bagdja se encarga de todo lo demás.**
+
+---
+
+## 🚀 Pensamiento final
+
+Bagdja no es solo una plataforma.
+
+Es:
+
+- Capa de infraestructura
+- Canal de distribución
+- Motor de crecimiento
+
+Todo en un solo ecosistema.
+
+---
+
+## 👉 Siguiente paso
+
+Comienza con:
+
+- 🔧 Configurar el SDK
+- 📦 Publicar tu primera aplicación
+- 🚀 Lanzar al ecosistema
+
+---
+
+****Construyamos el futuro — juntos.**
+**
+
