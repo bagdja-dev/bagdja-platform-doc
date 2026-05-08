@@ -52,8 +52,13 @@ export async function GET(request: Request) {
         const fileSlug = segments.join(".");
         
         const id = parsed.data.id || fileSlug;
+        const order = typeof parsed.data.order === "number" ? parsed.data.order : 999;
         
-        if (!mapping[id]) mapping[id] = { id, locales: {} };
+        if (!mapping[id]) mapping[id] = { id, order, locales: {} };
+        // Update order if we found a version with a specific order ( Indonesia priority )
+        if (fileLocale === "id" && parsed.data.order !== undefined) {
+          mapping[id].order = order;
+        }
         mapping[id].locales[fileLocale!] = fileSlug;
       }
       
