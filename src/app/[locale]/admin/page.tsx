@@ -24,12 +24,12 @@ function PublicDocsPreview({ slug, locale }: { slug: string; locale: string }) {
           Isi slug dulu untuk preview.
         </div>
       ) : (
-      <iframe
-        key={iframeKey}
-        src={`/${locale}/docs-embed/${slug}`}
-        className="w-full h-full border-none"
-        title="Public Docs Preview"
-      />
+        <iframe
+          key={iframeKey}
+          src={`/${locale}/docs-embed/${slug}`}
+          className="w-full h-full border-none"
+          title="Public Docs Preview"
+        />
       )}
     </div>
   );
@@ -67,7 +67,7 @@ export default function AdminPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [contentMiniSearch, setContentMiniSearch] = useState<MiniSearch | null>(null);
   const [indexVersion, setIndexVersion] = useState(0);
-  const [viewMode, setViewMode] = useState<"edit" | "visual" | "preview">("visual");
+  const [viewMode, setViewMode] = useState<"edit" | "preview">("preview");
 
   const rawEditorRef = useRef<HTMLTextAreaElement | null>(null);
   const mdxEditorRef = useRef<MDXEditorMethods | null>(null);
@@ -271,26 +271,32 @@ export default function AdminPage() {
 
   // Helper untuk membangun Tree Structure dari localized docs
   const buildTree = (docsList: any[]) => {
-    const root: any = { children: {} };
+    const rootNode: any = { children: {} };
     docsList.forEach(doc => {
       // Gunakan slug bahasa Indonesia sebagai path tree utama
       const mainSlug = doc.locales.id || doc.id;
       const parts = mainSlug.split("/");
-      let current = root;
+      let current = rootNode;
       parts.forEach((part: string, index: number) => {
+        const isDoc = index === parts.length - 1;
         if (!current.children[part]) {
           current.children[part] = {
             name: part,
-            fullId: doc.id,
+            fullId: isDoc ? doc.id : null,
             fullSlug: parts.slice(0, index + 1).join("/"),
-            isDoc: index === parts.length - 1,
+            isDoc: isDoc,
+            order: isDoc ? (doc.order ?? 999) : 999,
             children: {}
           };
+        } else if (isDoc) {
+          current.children[part].isDoc = true;
+          current.children[part].fullId = doc.id;
+          current.children[part].order = doc.order ?? 999;
         }
         current = current.children[part];
       });
     });
-    return root.children;
+    return rootNode.children;
   };
 
   useEffect(() => {
@@ -477,9 +483,16 @@ Start writing here...`;
 
         {isOpen && hasChildren && (
           <div className="mt-1">
-            {Object.values(node.children).sort((a: any, b: any) => a.name.localeCompare(b.name)).map((child: any) => (
-              <TreeItem key={child.fullSlug} node={child} level={level + 1} />
-            ))}
+            {Object.values(node.children)
+              .sort((a: any, b: any) => {
+                const orderA = a.order ?? 999;
+                const orderB = b.order ?? 999;
+                if (orderA !== orderB) return orderA - orderB;
+                return a.name.localeCompare(b.name);
+              })
+              .map((child: any) => (
+                <TreeItem key={child.fullSlug} node={child} level={level + 1} />
+              ))}
           </div>
         )}
       </div>
@@ -685,9 +698,16 @@ Start writing here...`;
                 </button>
               </div>
               <div className="mt-1">
-                {Object.values(buildTree(docs)).sort((a: any, b: any) => a.name.localeCompare(b.name)).map((node: any) => (
-                  <TreeItem key={node.fullSlug} node={node} level={1} />
-                ))}
+                {Object.values(buildTree(docs))
+                  .sort((a: any, b: any) => {
+                    const orderA = a.order ?? 999;
+                    const orderB = b.order ?? 999;
+                    if (orderA !== orderB) return orderA - orderB;
+                    return a.name.localeCompare(b.name);
+                  })
+                  .map((node: any) => (
+                    <TreeItem key={node.fullSlug} node={node} level={1} />
+                  ))}
               </div>
             </div>
           )}
@@ -768,7 +788,7 @@ Start writing here...`;
             </div>
 
             {/* Editor Area */}
-            <div className="p-0 bg-zinc-950 relative overflow-y-hidden" style={{ height: viewMode === 'edit' ? 'calc(100% - 280px)' : '100%'}}>
+            <div className="p-0 bg-zinc-950 relative overflow-y-hidden" style={{ height: viewMode === 'edit' ? 'calc(100% - 280px)' : '100%' }}>
               {isLoading && (
                 <div className="absolute inset-0 bg-zinc-950/50 backdrop-blur-sm flex items-center justify-center z-10">
                   Loading content...
@@ -945,14 +965,6 @@ Start writing here...`;
                     </div>
                   </div>
                 </>
-              ) : viewMode === "visual" ? (
-                <ForwardRefMDXEditor
-                  key={`${selectedId ?? "none"}:${activeTab}`}
-                  ref={mdxEditorRef}
-                  markdown={contents[activeTab]?.content || ""}
-                  onChange={(next) => setActiveContent(next)}
-                  className="dark-theme bagdja-mdxeditor"
-                />
               ) : (
                 <div className="w-full h-full overflow-hidden">
                   <PublicDocsPreview
