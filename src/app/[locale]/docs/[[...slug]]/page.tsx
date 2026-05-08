@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import type { Metadata } from "next";
 import { compileMDX } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
@@ -6,7 +6,7 @@ import matter from "gray-matter";
 import { notFound, redirect } from "next/navigation";
 
 import { getAllDocsSlugs, getDocSourceBySlug } from "@/lib/docs";
-import { defaultLocale, isLocale, type Locale, locales } from "@/lib/i18n";
+import { defaultLocale, isLocale, type Locale, locales, translations } from "@/lib/i18n";
 
 type PageProps = {
   params: Promise<{ slug?: string[]; locale: string }>;
@@ -61,18 +61,23 @@ export default async function DocsPage(props: PageProps) {
   if (!slug?.length) {
     const slugs = await getAllDocsSlugs();
     if (!slugs.length) {
+      const t = translations[locale];
       return (
-        <div className="rounded-lg border border-[color:var(--border-default)] bg-[var(--bg-surface)] p-6">
-          <div className="text-lg font-semibold text-[color:var(--text-primary)]">
-            Dokumentasi belum tersedia
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8 shadow-xl">
+          <div className="text-2xl font-black text-zinc-100">
+            {t.noDocsTitle}
           </div>
-          <div className="mt-2 text-sm text-[color:var(--text-secondary)]">
-            Tambahkan file .md/.mdx ke folder{" "}
-            <span className="font-mono text-[color:var(--text-primary)]">
-              docs/
-            </span>{" "}
-            untuk mulai menulis
-            dokumentasi.
+          <div className="mt-4 text-zinc-400 leading-relaxed">
+            {t.noDocsDesc.split("docs/").map((part, i, arr) => (
+              <React.Fragment key={i}>
+                {part}
+                {i < arr.length - 1 && (
+                  <code className="rounded bg-zinc-800 px-1.5 py-0.5 text-xs font-mono text-amber-500/90 border border-zinc-700">
+                    docs/
+                  </code>
+                )}
+              </React.Fragment>
+            ))}
           </div>
         </div>
       );
