@@ -1,0 +1,72 @@
+---
+title: Panduan Integrasi Email
+description: Cara menggunakan Bagdja Messaging Service untuk mengirim notifikasi email menggunakan template Handlebars.
+id: messaging/email
+order: 2
+---
+
+# Panduan Integrasi Email
+
+Halaman ini menjelaskan cara mengirim notifikasi email dari aplikasi Anda melalui Bagdja Messaging Service.
+
+## 1. Konfigurasi Template
+
+Sebelum mengirim email, pastikan Anda telah mendaftarkan template di **Bagdja Console** untuk mendapatkan `slug` template tersebut.
+
+---
+
+## 2. Autentikasi
+
+Bagdja Messaging Service mendukung berbagai metode autentikasi yang fleksibel (`x-api-key`, `x-api-token`, atau `Authorization Bearer`).
+
+Untuk memahami detail jenis token yang harus digunakan dan cara mendapatkannya, silakan merujuk pada dokumentasi **[Memahami Token](../auth/token)**.
+
+---
+
+## 3. Implementasi Backend (NestJS)
+
+Gunakan pola ini untuk mengirim email dengan keamanan maksimal (Identitas Aplikasi + Audit Trail User).
+
+```typescript
+async sendEmail(to: string, template: string, context: any, userToken?: string) {
+  const apiUrl = process.env.BAGDJA_MESSAGE_API;
+  const clientToken = process.env.CLIENT_APP_TOKEN; // x-api-key aplikasi Anda
+
+  const headers: any = {
+    "Content-Type": "application/json",
+    "x-api-key": clientToken 
+  };
+
+  // Jika aksi dipicu oleh user (misal: Checkout), sertakan Bearer token user
+  if (userToken) {
+    headers["Authorization"] = `Bearer ${userToken}`;
+  }
+
+  const response = await fetch(`${apiUrl}/messages/email/send`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ to, template, context })
+  });
+
+  return response.json();
+}
+```
+
+---
+
+## 4. Struktur Payload (Context)
+
+Pastikan data JSON `context` yang Anda kirim sesuai dengan variabel yang ada di template Handlebars Anda.
+
+**Contoh Payload:**
+```json
+{
+  "to": "customer@example.com",
+  "template": "course-order-confirmation",
+  "context": {
+    "customer_name": "Bunga Poppy",
+    "order_id": "ORD-913B5B",
+    "total_price": "IDR 278.997"
+  }
+}
+```

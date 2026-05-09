@@ -1,0 +1,33 @@
+---
+title: Pengenalan Messaging
+description: Memahami Bagdja Messaging Service sebagai pusat notifikasi terpadu untuk seluruh ekosistem Bagdja.
+id: messaging/introduction
+order: 1
+---
+
+# Pengenalan Messaging Service
+
+Bagdja Messaging Service adalah layanan inti yang menangani seluruh komunikasi dan notifikasi keluar dari platform Bagdja. Dirancang untuk skalabilitas, layanan ini memungkinkan aplikasi apa pun di ekosistem kita untuk mengirim pesan tanpa harus mengelola infrastruktur komunikasi sendiri.
+
+## Fitur Utama
+
+Layanan ini menyediakan abstraksi tingkat tinggi untuk berbagai saluran komunikasi:
+
+1.  **Centralized Template Management**: Kelola seluruh desain email dan pesan di satu tempat melalui Bagdja Console menggunakan mesin Handlebars.
+2.  **Multi-Provider Support**: Integrasi dengan berbagai penyedia email (SMTP, Mailgun, AWS SES) dan saluran lainnya.
+3.  **B2B Secure API**: Komunikasi aman antar layanan menggunakan `x-api-token` untuk mencegah penyalahgunaan.
+4.  **Delivery Logging**: Melacak status setiap pesan yang dikirim (Sent, Pending, Failed) untuk tujuan audit dan debugging.
+
+---
+
+## Roadmap Fitur (Masa Depan)
+
+Kami terus mengembangkan layanan ini untuk mendukung lebih banyak kebutuhan bisnis:
+
+-   **WhatsApp Integration**: Pengiriman notifikasi otomatis melalui WhatsApp Business API.
+-   **In-App Notifications**: Sistem push notification real-time langsung di dalam aplikasi (Web & Mobile).
+-   **Push Notifications**: Dukungan untuk Firebase Cloud Messaging (FCM) dan Apple Push Notification Service (APNs).
+-   **Scheduling**: Kemampuan untuk menjadwalkan pengiriman pesan di masa mendatang.
+-   **Analytics Dashboard**: Statistik tingkat keterbukaan email (open rates) dan rasio pengiriman sukses di seluruh platform.
+
+Dengan Messaging Service, pengembang dapat fokus pada logika bisnis aplikasi mereka, sementara kami menangani kompleksitas pengiriman pesan kepada pengguna.

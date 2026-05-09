@@ -1,0 +1,42 @@
+---
+title: Pengenalan Auth
+description: Memahami konsep dasar, arsitektur, dan alur kerja Single Sign-On (SSO) di Bagdja Platform.
+id: auth/introduction
+order: 1
+---
+
+# Pengenalan Bagdja Auth & SSO
+
+Bagdja Auth adalah pusat identitas (Identity Provider) untuk seluruh ekosistem aplikasi Bagdja. Layanan ini dirancang menggunakan arsitektur microservices untuk menyediakan autentikasi yang aman, terpusat, dan mudah diintegrasikan.
+
+## Arsitektur Autentikasi
+
+Sistem autentikasi Bagdja terdiri dari tiga komponen utama yang saling bekerja sama:
+
+1.  **Bagdja Auth (Backend)**: Mesin inti yang mengelola database pengguna, memvalidasi kredensial, dan menerbitkan token.
+2.  **Bagdja Login (Portal)**: Antarmuka pengguna terpusat. Semua aplikasi Bagdja akan mengarahkan pengguna ke portal ini untuk masuk.
+3.  **Client Apps**: Aplikasi apa pun (seperti Bagdja Course, Bagdja Console) yang menggunakan layanan Bagdja Auth untuk mengidentifikasi pengguna.
+
+---
+
+## Cara Kerja SSO (Single Sign-On)
+
+Single Sign-On memungkinkan pengguna untuk masuk sekali dan mendapatkan akses ke berbagai aplikasi tanpa harus memasukkan kredensial berulang kali.
+
+### Alur Login Pengguna
+
+1.  **Permintaan Akses**: Pengguna mencoba mengakses fitur yang dilindungi di aplikasi klien.
+2.  **Redireksi ke Portal**: Aplikasi klien mengarahkan pengguna ke `bagdja-login` dengan menyertakan `redirect_url`.
+3.  **Autentikasi Pusat**: Pengguna masuk di portal `bagdja-login`.
+4.  **Verifikasi & Token**: `bagdja-auth` memverifikasi identitas dan menghasilkan token identitas.
+5.  **Kembali ke Klien**: Pengguna diarahkan kembali ke aplikasi klien sambil membawa token di URL.
+
+---
+
+## Dasar Keamanan
+
+Keamanan komunikasi di Bagdja Platform didasarkan pada penggunaan token JWT yang ditandatangani secara digital. Untuk memahami lebih dalam mengenai jenis-jenis token yang digunakan, silakan baca panduan [Memahami Token](./token).
+
+## Panduan Pengembang (Dev Guide)
+
+Untuk mengintegrasikan aplikasi baru, silakan ikuti langkah-langkah di [Panduan Integrasi](./getting-started).
