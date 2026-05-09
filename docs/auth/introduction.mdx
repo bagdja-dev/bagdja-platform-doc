@@ -1,0 +1,57 @@
+---
+title: Pengenalan Auth
+description: Memahami konsep dasar, arsitektur, dan alur kerja Single Sign-On (SSO) di Bagdja Platform.
+id: auth/introduction
+order: 1
+---
+
+# Pengenalan Bagdja Auth & SSO
+
+Bagdja Auth adalah pusat identitas (Identity Provider) untuk seluruh ekosistem aplikasi Bagdja. Layanan ini dirancang menggunakan arsitektur microservices untuk menyediakan autentikasi yang aman, terpusat, dan mudah diintegrasikan.
+
+## Arsitektur Autentikasi
+
+Sistem autentikasi Bagdja terdiri dari tiga komponen utama yang saling bekerja sama:
+
+1.  **Bagdja Auth (Backend)**: Mesin inti yang mengelola database pengguna, memvalidasi kredensial, dan menerbitkan token (JWT & x-api-token).
+2.  **Bagdja Login (Portal)**: Antarmuka pengguna terpusat. Semua aplikasi Bagdja akan mengarahkan pengguna ke portal ini untuk masuk.
+3.  **Client Apps**: Aplikasi apa pun (seperti Bagdja Course, Bagdja Console) yang menggunakan layanan Bagdja Auth untuk mengidentifikasi pengguna.
+
+---
+
+## Cara Kerja SSO (Single Sign-On)
+
+Single Sign-On memungkinkan pengguna untuk masuk sekali dan mendapatkan akses ke berbagai aplikasi tanpa harus memasukkan kredensial berulang kali.
+
+### Alur Login Pengguna
+
+1.  **Permintaan Akses**: Pengguna mencoba mengakses fitur yang dilindungi di aplikasi klien (misal: Bagdja Course).
+2.  **Redireksi ke Portal**: Aplikasi klien menyadari pengguna belum login dan mengarahkan mereka ke `bagdja-login`.
+    *   *URL Contoh*: `https://login.bagdja.com?redirect_url=https://course.bagdja.com/callback`
+3.  **Autentikasi Pusat**: Pengguna memasukkan email/password atau menggunakan Google SSO di portal `bagdja-login`.
+4.  **Verifikasi & Token**: `bagdja-auth` memverify identitas dan menghasilkan JWT (Json Web Token).
+5.  **Kembali ke Klien**: `bagdja-login` mengarahkan pengguna kembali ke `redirect_url` aplikasi klien sambil menyertakan token JWT di query parameter.
+6.  **Sesi Lokal**: Aplikasi klien menangkap token, menyimpannya di browser, dan memulai sesi pengguna secara lokal.
+
+---
+
+## Keamanan Antar Layanan (x-api-token)
+
+Selain autentikasi pengguna, Bagdja juga memiliki sistem keamanan antar layanan menggunakan **x-api-token**.
+
+*   Setiap aplikasi klien harus terdaftar di `bagdja-auth` dan memiliki `appId` serta `appSecret`.
+*   Token ini digunakan agar `bagdja-auth` tahu bahwa permintaan datang dari aplikasi yang sah, bukan dari pihak luar yang tidak dikenal.
+*   Mendukung algoritma modern **Ed25519 (EdDSA)** untuk keamanan kunci publik/privat yang maksimal.
+
+---
+
+## Panduan Pengembang (Dev Guide)
+
+Untuk mengintegrasikan aplikasi baru ke dalam ekosistem Bagdja Auth, pengembang perlu:
+
+1.  **Registrasi Client**: Daftarkan aplikasi di Bagdja Auth untuk mendapatkan `appId`.
+2.  **Implementasi Redirect**: Buat logika untuk mengarahkan pengguna ke portal login jika tidak ada token.
+3.  **Callback Handler**: Buat endpoint atau halaman di frontend untuk menangkap token dari URL setelah login sukses.
+4.  **Token Validation**: Di sisi backend aplikasi klien, gunakan kunci publik Bagdja Auth untuk memverifikasi keaslian JWT yang dikirim oleh pengguna.
+
+Dengan sistem ini, pengembang aplikasi klien tidak perlu lagi memikirkan manajemen database password, keamanan hashing, atau kompleksitas OAuth Google.

@@ -1,0 +1,167 @@
+---
+title: Panduan Integrasi
+description: Langkah-langkah teknis untuk mengintegrasikan aplikasi Anda dengan ekosistem Bagdja Auth & SSO.
+id: auth/getting-started
+order: 2
+---
+
+# Panduan Integrasi (Getting Started)
+
+Panduan ini menjelaskan langkah-langkah teknis untuk mengintegrasikan aplikasi Anda (Client App) dengan ekosistem **Bagdja Auth & SSO** menggunakan standar keamanan industri yang matang.
+
+## Langkah 1: Registrasi Aplikasi (Client App)
+
+Sebelum mulai, aplikasi Anda harus terdaftar di sistem Bagdja Auth melalui [Bagdja Console](https://console.bagdja.com).
+- **Client App ID**: Identitas unik aplikasi Anda (contoh: `books-and-course-store`).
+- **Client App Secret**: Kunci rahasia untuk autentikasi aman antar layanan (Backend-to-Backend). **Jangan pernah membocorkan kunci ini ke sisi Frontend.**
+
+---
+
+## Langkah 2: Konfigurasi Environment Variables
+
+Tambahkan variabel berikut ke dalam file `.env` aplikasi Anda:
+
+### Frontend (.env)
+```env
+NEXT_PUBLIC_AUTH_API=https://auth.bagdja.com
+NEXT_PUBLIC_LOGIN_URL=https://login.bagdja.com
+NEXT_PUBLIC_CLIENT_APP_ID=your-app-id
+```
+
+### Backend (.env)
+```env
+BAGDJA_AUTH_API=https://auth.bagdja.com
+CLIENT_APP_ID=your-app-id
+CLIENT_APP_SECRET=your-app-secret
+# URL JWKS untuk verifikasi token tanpa berbagi secret
+BAGDJA_JWKS_URL=https://auth.bagdja.com/.well-known/jwks.json
+```
+
+---
+
+## Langkah 3: Integrasi Frontend (Next.js)
+
+### 1. Fungsi Login SSO (dengan Redirect URL)
+Aplikasi Anda tidak perlu mengelola form login. Anda cukup mengarahkan pengguna ke portal pusat Bagdja dengan menyertakan `redirect_url` yang menunjuk ke endpoint callback aplikasi Anda.
+
+```typescript
+// lib/auth.ts
+export function redirectToLogin() {
+  const loginUrl = new URL(process.env.NEXT_PUBLIC_LOGIN_URL || 'https://login.bagdja.com');
+  const appId = process.env.NEXT_PUBLIC_CLIENT_APP_ID;
+  
+  // Endpoint callback di aplikasi Anda
+  const callbackUrl = new URL(`${window.location.origin}/auth/callback`);
+  
+  // Opsional: Simpan halaman terakhir agar setelah login bisa kembali ke sana
+  // Anda bisa menyematkannya di dalam callbackUrl sebagai parameter
+  callbackUrl.searchParams.set('redirect', window.location.pathname);
+  
+  // Set parameter utama untuk bagdja-login
+  loginUrl.searchParams.set('app_id', appId || '');
+  loginUrl.searchParams.set('redirect_url', callbackUrl.toString());
+  
+  window.location.href = loginUrl.toString();
+}
+```
+
+### 2. Halaman Callback & Sinkronisasi
+Halaman ini menangkap token yang dikirim oleh Bagdja Login melalui query parameter.
+
+```tsx
+// pages/auth/callback.tsx
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { fetchWithAuth } from '../../lib/api';
+
+export default function AuthCallback() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const { token, redirect } = router.query;
+
+    if (token && typeof token === 'string') {
+      // 1. Simpan token secara lokal
+      localStorage.setItem('bagdja:access_token', token);
+      
+      // 2. Panggil API backend lokal untuk sinkronisasi profil (Secure B2B)
+      fetchWithAuth('/users/sync', { method: 'POST' })
+        .then(() => {
+          // 3. Kembali ke halaman asal (jika ada) atau ke Home
+          const targetPath = (typeof redirect === 'string' ? redirect : null) || '/';
+          router.push(targetPath);
+        })
+        .catch(() => router.push('/?error=sync_failed'));
+    }
+  }, [router.isReady, router.query]);
+
+  return <div>Menyinkronkan profil...</div>;
+}
+```
+
+---
+
+## Langkah 4: Integrasi Backend (NestJS)
+
+### 1. Verifikasi Token Menggunakan JWKS
+Backend Anda memverifikasi keaslian token menggunakan **JWKS** untuk mengambil *public key* secara dinamis dari server pusat.
+
+```typescript
+// auth/jwt.strategy.ts
+import { passportJwtSecret } from 'jwks-rsa';
+
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor(config: ConfigService) {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKeyProvider: passportJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksUri: config.get('BAGDJA_JWKS_URL'),
+      }),
+      algorithms: ['EdDSA'], // Algoritma standar Bagdja Platform
+    });
+  }
+
+  async validate(payload: any) {
+    // payload.sub adalah userId unik dari Bagdja Auth
+    return { userId: payload.sub, email: payload.email };
+  }
+}
+```
+
+### 2. Sinkronisasi Data Profil (Secure Call)
+Lakukan sinkronisasi data user dari pusat ke database lokal Anda untuk integritas data.
+
+```typescript
+// users.service.ts
+async syncUser(userToken: string) {
+  const authApiUrl = this.config.get("BAGDJA_AUTH_API");
+
+  // Call B2B menggunakan token user untuk mendapatkan profil terbaru
+  const res = await fetch(`${authApiUrl}/auth/profile`, {
+    headers: { 'Authorization': `Bearer ${userToken}` }
+  });
+
+  const profile = await res.json();
+  
+  // Mirroring data ke database lokal (upsert)
+  return this.db.users.upsert({
+    id: profile.id,
+    email: profile.email,
+    full_name: profile.full_name,
+    avatar_url: profile.avatar_url
+  });
+}
+```
+
+---
+
+## 🔐 Keamanan & Praktik Terbaik
+
+1.  **Backend-to-Backend Call**: Gunakan Backend sebagai perantara untuk komunikasi yang memerlukan `Client Secret`.
+2.  **Data Mirroring**: Simpan salinan profil dasar secara lokal untuk performa `JOIN` yang lebih cepat di database Anda.
+3.  **Gunakan JWKS**: Hindari berbagi rahasia (`JWT_SECRET`) antar layanan; gunakan kunci publik dinamis melalui JWKS.
