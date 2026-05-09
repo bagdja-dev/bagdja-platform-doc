@@ -1,0 +1,45 @@
+---
+title: Memahami Token
+description: Penjelasan mendetail mengenai jenis-jenis token di Bagdja Platform, sumber perolehannya, dan mekanisme verifikasinya.
+id: auth/token
+order: 2
+---
+
+# Memahami Token & Autentikasi
+
+Bagdja Platform menggunakan beberapa jenis token untuk menjamin keamanan komunikasi antar layanan (B2B) dan identitas pengguna. Memahami perbedaan antara token ini sangat penting untuk integrasi yang aman.
+
+## 1. Identitas Aplikasi (x-api-key / x-api-token)
+
+Token ini digunakan untuk **Autentikasi Server-to-Server (Backend-to-Backend)**. Ini membuktikan bahwa permintaan berasal dari aplikasi resmi yang terdaftar di platform kita.
+
+- **Apa itu**: Sebuah JWT (JSON Web Token) berumur panjang atau permanen yang merepresentasikan identitas aplikasi Anda.
+- **Didapat dari mana**: 
+  1. Buka [Bagdja Console](https://console.bagdja.com).
+  2. Masuk ke menu **Applications** dan pilih aplikasi Anda.
+  3. Di bagian **API Keys**, Anda akan menemukan `Client App Secret`. 
+  4. Token ini diperoleh dengan menukarkan `app_id` dan `app_secret` tersebut melalui endpoint `/auth/client` di layanan Bagdja Auth.
+- **Penggunaan**: Masukkan token hasil pertukaran tersebut pada header `x-api-key` atau `x-api-token`.
+
+## 2. Identitas Pengguna (Authorization Bearer)
+
+Token ini digunakan untuk **Autentikasi Pengguna**. Ini membuktikan siapa user yang sedang melakukan aksi di dalam aplikasi.
+
+- **Apa itu**: Sebuah JWT berumur pendek yang berisi informasi profil pengguna seperti `userId`, `email`, dan `role`.
+- **Didapat dari mana**:
+  1. Pengguna melakukan login melalui **Bagdja SSO (Bagdja Login)**.
+  2. Setelah login sukses, portal SSO akan mengarahkan pengguna kembali ke aplikasi Anda dengan menyertakan `token` pada query parameter URL.
+  3. Aplikasi Anda menangkap dan menyimpan token tersebut di sisi klien (localStorage/Cookie).
+- **Penggunaan**: Masukkan token ini pada header standar `Authorization: Bearer <TOKEN_JWT>`.
+
+---
+
+## Mekanisme Verifikasi Otomatis
+
+Platform Bagdja dirancang untuk memudahkan pengembang dengan mendukung verifikasi otomatis terhadap header-header di atas:
+
+1.  **Self-Contained Identity**: Anda tidak perlu mengirimkan header `app-id` secara manual. Semua identitas aplikasi dan pengguna sudah tertanam secara aman di dalam token JWT.
+2.  **Stateless Verification (JWKS)**: Sistem kami memverifikasi keaslian token menggunakan kunci publik (**EdDSA**) melalui standar **JWKS** (`.well-known/jwks.json`). Proses ini terjadi dalam hitungan milidetik tanpa perlu memanggil database pusat.
+3.  **Audit Trail**: Dengan menyertakan JWT Pengguna bersamaan dengan API Key aplikasi, setiap aksi (seperti pengiriman email atau transaksi) akan tercatat secara akurat atas nama pengguna yang bersangkutan di sistem log kami.
+
+> **Rekomendasi Keamanan**: Selalu simpan `Client App Secret` di sisi Backend Anda dan jangan pernah mengeksposnya ke aplikasi Frontend.
